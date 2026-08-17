@@ -26,7 +26,8 @@ export function composeArticle(
 
   const text = blocks.filter(isTextBlock);
   const skipCover = opts?.skipCover ?? true;
-  const body = photos.filter((p) => p && p.url).slice(skipCover ? 1 : 0);
+  // aceita fotos reais (com url) e placeholders de demonstração (demo)
+  const body = photos.filter((p) => p && (p.url || p.demo)).slice(skipCover ? 1 : 0);
 
   if (body.length === 0) return text;
   if (text.length === 0) {

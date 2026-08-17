@@ -38,3 +38,5 @@ DEPLOY.md
 _to_delete/
 _tsp-*.zip
 *.zip
+
+.vercel
