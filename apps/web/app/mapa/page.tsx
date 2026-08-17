@@ -29,14 +29,11 @@ export default async function MapaPage() {
         </div>
       </div>
 
-      <SPMap markers={markers} height={560} filters />
+      <SPMap markers={markers} height={600} filters />
 
-      <div className="map-legend">
-        <span><span className="legend-dot" style={{ borderColor: 'var(--accent)', background: 'var(--accent)' }} /> Favorito</span>
-        <span><span className="legend-dot" style={{ borderColor: 'var(--gold)', background: 'var(--gold)' }} /> Quero voltar</span>
-        <span><span className="legend-dot" style={{ borderColor: 'var(--green)', background: 'var(--green)' }} /> Visitado</span>
-        <span className="coord">Mapa limitado à cidade de São Paulo</span>
-      </div>
+      <p className="coord" style={{ marginTop: '1rem', textAlign: 'center', color: 'var(--text-faint)' }}>
+        Clique num ponto para ver o lugar · o mapa é limitado à cidade de São Paulo
+      </p>
     </div>
   );
 }

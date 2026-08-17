@@ -137,6 +137,10 @@ export interface MapMarker {
   wantToReturn: boolean;
   explorations: number;
   shortDescription: string;
+  rating: number;
+  coverUrl: string;
+  coverDemo: boolean;
+  coverHue: number;
 }
 
 /** Marcadores do mapa: só lugares cadastrados (cada um é um lugar visitado). */
@@ -156,6 +160,10 @@ export async function getMapMarkers(): Promise<MapMarker[]> {
     wantToReturn: p.wantToReturn,
     explorations: expCount.get(p.slug) ?? 0,
     shortDescription: p.shortDescription,
+    rating: p.rating ?? 0,
+    coverUrl: p.coverImage?.url ?? '',
+    coverDemo: p.coverImage?.demo ?? true,
+    coverHue: p.coverImage?.hue ?? 30,
   }));
 }
 
