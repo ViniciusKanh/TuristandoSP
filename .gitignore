@@ -1,0 +1,32 @@
+# dependencies
+node_modules
+.pnp
+.pnp.js
+
+# next / builds
+.next
+out
+dist
+build
+*.tsbuildinfo
+next-env.d.ts
+
+# env
+.env
+.env*.local
+!.env.example
+
+# turso / local db
+*.db
+*.db-*
+local.db
+.data/
+
+# misc
+.DS_Store
+*.log
+.vercel
+coverage
+.idea
+.vscode/*
+!.vscode/extensions.json

@@ -1,0 +1,21 @@
+{
+  "name": "turistando-sp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "São Paulo, um lugar de cada vez — diário autoral de exploração urbana da capital paulista.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/web",
+    "build": "npm run build --workspace=apps/web",
+    "start": "npm run start --workspace=apps/web",
+    "lint": "npm run lint --workspace=apps/web",
+    "typecheck": "tsc -p packages/core/tsconfig.json --noEmit && npm run typecheck --workspace=apps/web",
+    "seed:places": "node apps/web/scripts/add-places.mjs"
+  },
+  "engines": {
+    "node": ">=18.18"
+  }
+}
