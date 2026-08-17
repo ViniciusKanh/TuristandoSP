@@ -5,6 +5,7 @@ import {
   neighborhoodBySlug,
   formatDuration,
   formatBRL,
+  formatDateLong,
   formatExplorationNumber,
 } from '@turistando/core';
 import {
@@ -21,6 +22,8 @@ import { UrbanLabel, Coordinates } from '@/components/brand';
 import { ArrowRight, MapIcon } from '@/components/brand/Icons';
 import { ExplorationCard, CategoryCard, NeighborhoodCard } from '@/components/cards';
 import { SPMap } from '@/components/feature/SPMap';
+import { Reveal } from '@/components/feature/Reveal';
+import { CountUp } from '@/components/feature/CountUp';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,6 +38,7 @@ export default async function HomePage() {
     getSettings(),
   ]);
   const feed = feedAll.slice(0, 4);
+  const journey = feedAll.slice(0, 6);
   const latestPlace = latest ? placeBySlug.get(latest.placeSlug) : undefined;
   const latestHood = latestPlace ? neighborhoodBySlug.get(latestPlace.neighborhood) : undefined;
   const latestTotal = latest ? latest.expenses.reduce((s, e) => s + e.amount, 0) : 0;
@@ -86,28 +90,52 @@ export default async function HomePage() {
             ) : null}
           </div>
         </div>
+        <a href="#historia" className="hero__scroll" aria-label="Descer para a história">
+          <span>a história</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7" /></svg>
+        </a>
+      </section>
+
+      {/* MANIFESTO / STORYTELLING */}
+      <section id="historia" className="section container">
+        <Reveal>
+          <div className="manifesto">
+            <UrbanLabel>Como começou</UrbanLabel>
+            <p className="manifesto__lead">
+              Um dia percebi que morava numa das maiores cidades do mundo e mal a conhecia. Então criei uma regra simples:
+              <strong> sair, andar e prestar atenção</strong>. Sem roteiro pronto, sem pressa.
+            </p>
+            <p className="manifesto__text">
+              Cada saída vira uma rota, cada rota vira uma história. Eu fotografo, anoto o que senti, quanto gastei e se voltaria —
+              e transformo tudo numa matéria aqui. Este blog é esse caderno de viagem: São Paulo contada a pé, um lugar de cada vez.
+            </p>
+            <p className="manifesto__sign">— {siteConfig.authorName}</p>
+          </div>
+        </Reveal>
       </section>
 
       {/* ÚLTIMA EXPLORAÇÃO */}
       {latest && latestPlace ? (
-        <section className="section container container-wide">
-          <div className="eyebrow"><UrbanLabel>Última parada · {formatExplorationNumber(latest.number)}</UrbanLabel></div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 1fr)', gap: 'clamp(1.5rem, 4vw, 3.5rem)', alignItems: 'center' }} className="feature-split">
-            <Photo photo={latest.photos[0] ?? latestPlace.coverImage} />
-            <div className="stack">
-              <span className="u-label" style={{ color: 'var(--text-faint)' }}>{latestHood?.name} · {siteConfig.city}</span>
-              <h2 className="display title-lg">{latest.title}</h2>
-              <p className="lead">{latest.subtitle}</p>
-              <div className="ficha" style={{ marginTop: '1rem' }}>
-                <div className="ficha__cell"><div className="ficha__val">{Math.round(latest.durationMinutes / 60)}</div><div className="ficha__key">Tempo · {formatDuration(latest.durationMinutes)}</div></div>
-                <div className="ficha__cell"><div className="ficha__val">{latest.rating.overall}</div><div className="ficha__key">Nota</div></div>
-                <div className="ficha__cell"><div className="ficha__val" style={{ fontSize: '1.6rem' }}>{latestTotal > 0 ? formatBRL(latestTotal) : 'Grátis'}</div><div className="ficha__key">Gastei</div></div>
-              </div>
-              <div style={{ marginTop: '1.25rem' }}>
-                <Link href={`/exploracoes/${latest.slug}`} className="btn btn-accent">Ler experiência completa <ArrowRight aria-hidden /></Link>
+        <section className="section-tight container container-wide">
+          <Reveal>
+            <div className="eyebrow"><UrbanLabel>Última parada · {formatExplorationNumber(latest.number)}</UrbanLabel></div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 1fr)', gap: 'clamp(1.5rem, 4vw, 3.5rem)', alignItems: 'center' }} className="feature-split">
+              <Photo photo={latest.photos[0] ?? latestPlace.coverImage} />
+              <div className="stack">
+                <span className="u-label" style={{ color: 'var(--text-faint)' }}>{latestHood?.name} · {siteConfig.city}</span>
+                <h2 className="display title-lg">{latest.title}</h2>
+                <p className="lead">{latest.subtitle}</p>
+                <div className="ficha" style={{ marginTop: '1rem' }}>
+                  <div className="ficha__cell"><div className="ficha__val">{Math.round(latest.durationMinutes / 60)}</div><div className="ficha__key">Tempo · {formatDuration(latest.durationMinutes)}</div></div>
+                  <div className="ficha__cell"><div className="ficha__val">{latest.rating.overall}</div><div className="ficha__key">Nota</div></div>
+                  <div className="ficha__cell"><div className="ficha__val" style={{ fontSize: '1.6rem' }}>{latestTotal > 0 ? formatBRL(latestTotal) : 'Grátis'}</div><div className="ficha__key">Gastei</div></div>
+                </div>
+                <div style={{ marginTop: '1.25rem' }}>
+                  <Link href={`/exploracoes/${latest.slug}`} className="btn btn-accent">Ler experiência completa <ArrowRight aria-hidden /></Link>
+                </div>
               </div>
             </div>
-          </div>
+          </Reveal>
         </section>
       ) : null}
 
@@ -118,15 +146,53 @@ export default async function HomePage() {
           <Link href="/diario" className="btn btn-ghost btn-sm">Ver diário <ArrowRight aria-hidden /></Link>
         </div>
         <div className="grid grid-4">
-          {feed.map((e) => (<ExplorationCard key={e.id} exp={e} place={placeBySlug.get(e.placeSlug)} />))}
+          {feed.map((e, i) => (
+            <Reveal key={e.id} delay={i * 80}>
+              <ExplorationCard exp={e} place={placeBySlug.get(e.placeSlug)} />
+            </Reveal>
+          ))}
         </div>
       </section>
+
+      {/* JORNADA — timeline */}
+      {journey.length > 1 ? (
+        <section className="section-tight container">
+          <div className="section-head">
+            <div><UrbanLabel>A jornada até aqui</UrbanLabel><h2 className="heading title-lg" style={{ marginTop: '0.75rem' }}>Linha do tempo das minhas saídas</h2></div>
+          </div>
+          <ol className="timeline">
+            {journey.map((e, i) => {
+              const p = placeBySlug.get(e.placeSlug);
+              const hood = p ? neighborhoodBySlug.get(p.neighborhood)?.name ?? p.neighborhoodName : '';
+              return (
+                <Reveal key={e.id} delay={i * 60}>
+                  <li className="timeline__item">
+                    <div className="timeline__dot" aria-hidden />
+                    <Link href={`/exploracoes/${e.slug}`} className="timeline__card">
+                      <span className="timeline__date">{formatDateLong(e.date)} · {formatExplorationNumber(e.number)}</span>
+                      <span className="timeline__title">{e.title}</span>
+                      <span className="timeline__place">{p?.name}{hood ? ` · ${hood}` : ''}</span>
+                    </Link>
+                  </li>
+                </Reveal>
+              );
+            })}
+          </ol>
+          <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+            <Link href="/diario" className="btn btn-ghost">Ver o diário completo <ArrowRight aria-hidden /></Link>
+          </div>
+        </section>
+      ) : null}
 
       {/* CATEGORIAS */}
       <section className="section-tight container container-wide">
         <div className="section-head"><div><UrbanLabel>Pontos na cidade</UrbanLabel><h2 className="heading title-lg" style={{ marginTop: '0.75rem' }}>Explorar por categoria</h2></div></div>
         <div className="grid grid-3">
-          {categories.slice(0, 6).map((c) => (<CategoryCard key={c.category.slug} slug={c.category.slug} name={c.category.name} count={c.places} />))}
+          {categories.slice(0, 6).map((c, i) => (
+            <Reveal key={c.category.slug} delay={i * 60}>
+              <CategoryCard slug={c.category.slug} name={c.category.name} count={c.places} />
+            </Reveal>
+          ))}
         </div>
       </section>
 
@@ -137,17 +203,21 @@ export default async function HomePage() {
           <Link href="/bairros" className="btn btn-ghost btn-sm">Todos os bairros <ArrowRight aria-hidden /></Link>
         </div>
         <div className="grid grid-4">
-          {hoods.slice(0, 4).map((h) => (<NeighborhoodCard key={h.neighborhood.slug} neighborhood={h.neighborhood} places={h.places} explorations={h.explorations} />))}
+          {hoods.slice(0, 4).map((h, i) => (
+            <Reveal key={h.neighborhood.slug} delay={i * 70}>
+              <NeighborhoodCard neighborhood={h.neighborhood} places={h.places} explorations={h.explorations} />
+            </Reveal>
+          ))}
         </div>
       </section>
 
-      {/* STATS BAND */}
+      {/* STATS BAND — números que contam sozinhos */}
       <section className="band section">
         <div className="container container-wide">
           <div className="section-head"><div><UrbanLabel>Ranking pessoal</UrbanLabel><h2 className="display title-lg" style={{ marginTop: '0.75rem', color: 'var(--on-band)' }}>Minha São Paulo até aqui</h2></div></div>
           <div className="stat-row" style={{ background: 'var(--band-surface)', borderColor: 'var(--band-surface)' }}>
             <Stat v={stats.places} k="Lugares" /><Stat v={stats.explorations} k="Explorações" /><Stat v={stats.neighborhoods} k="Bairros" />
-            <Stat v={stats.museums} k="Museus" /><Stat v={stats.parks} k="Parques" /><Stat v={stats.photos} k="Fotos" /><Stat v={`${Math.round(stats.totalMinutes / 60)}h`} k="Explorando" />
+            <Stat v={stats.museums} k="Museus" /><Stat v={stats.parks} k="Parques" /><Stat v={stats.photos} k="Fotos" /><Stat v={Math.round(stats.totalMinutes / 60)} suffix="h" k="Explorando" />
           </div>
         </div>
       </section>
@@ -160,14 +230,33 @@ export default async function HomePage() {
         </div>
         <SPMap markers={markers} height={460} />
       </section>
+
+      {/* CHAMADA FINAL */}
+      <section className="cta-band">
+        <div className="container">
+          <Reveal>
+            <div className="cta-band__inner">
+              <UrbanLabel>Bora?</UrbanLabel>
+              <h2 className="display title-xl" style={{ marginTop: '0.75rem', maxWidth: '18ch' }}>A cidade não acaba. E essa história também não.</h2>
+              <p className="lead" style={{ marginTop: '1rem', maxWidth: '52ch' }}>
+                A cada semana, uma parada nova. Vem comigo descobrir a São Paulo que a pressa não deixa ver.
+              </p>
+              <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', marginTop: '1.75rem' }}>
+                <Link href="/explorar" className="btn btn-accent">Começar a explorar <ArrowRight aria-hidden /></Link>
+                <Link href="/sobre" className="btn btn-ghost">Conhecer o autor</Link>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
     </>
   );
 }
 
-function Stat({ v, k }: { v: number | string; k: string }) {
+function Stat({ v, k, suffix }: { v: number; k: string; suffix?: string }) {
   return (
     <div className="stat" style={{ background: 'var(--band)' }}>
-      <div className="stat__val" style={{ color: 'var(--on-band)' }}>{v}</div>
+      <div className="stat__val" style={{ color: 'var(--on-band)' }}><CountUp value={v} suffix={suffix} /></div>
       <div className="stat__key">{k}</div>
     </div>
   );

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { siteConfig } from '@turistando/core';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { BackToTop } from '@/components/feature/BackToTop';
 import './globals.css';
 
 // Fontes carregadas via <link> (as famílias e os fallbacks vivem em globals.css).
@@ -65,6 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main id="conteudo">{children}</main>
         <Footer />
+        <BackToTop />
       </body>
     </html>
   );
