@@ -9,6 +9,7 @@ import {
   formatBRL,
   formatExplorationNumber,
   TRANSPORT_LABEL,
+  composeArticle,
   type ArticleBlock,
 } from '@turistando/core';
 import { getExploration, getPlace, getPublishedExplorations } from '@/lib/repo';
@@ -49,6 +50,8 @@ export default async function ExplorationPage({ params }: { params: { slug: stri
   const r = exp.rating;
   const cover = exp.photos[0] ?? place?.coverImage;
   const readMin = readingMinutes(exp.article);
+  // Fotos são a fonte da verdade: reconstrói o corpo com a ordem atual das fotos.
+  const renderBlocks = composeArticle(exp.article, exp.photos);
 
   const others = (await getPublishedExplorations()).filter((e) => e.slug !== exp.slug).slice(0, 3);
   const otherPlaces = await Promise.all(others.map((o) => getPlace(o.placeSlug)));
@@ -137,7 +140,7 @@ export default async function ExplorationPage({ params }: { params: { slug: stri
 
       {/* ARTIGO */}
       <div className="section container container-wide">
-        <ArticleRenderer blocks={exp.article} />
+        <ArticleRenderer blocks={renderBlocks} />
       </div>
 
       {/* AVALIAÇÃO */}

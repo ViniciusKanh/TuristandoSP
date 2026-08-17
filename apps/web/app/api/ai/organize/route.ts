@@ -14,14 +14,13 @@ interface Body {
 }
 
 const PROMPT = (b: Body) => {
-  const photos = (b.photos ?? []).map((p, i) => `Foto ${i}: ${p.alt || p.caption || 'sem descrição'}`).join('\n');
+  const nFotos = (b.photos ?? []).length;
   return `Você é editor(a) de um caderno de viagem elegante, no estilo de grandes reportagens de jornal. Recebe o relato bruto de uma visita e transforma num artigo bonito, envolvente e bem estruturado, em português do Brasil, mantendo a voz do autor em primeira pessoa.
 
 CONTEXTO
 Lugar: ${b.placeName ?? ''} — ${b.neighborhood ?? ''}
 Data: ${b.date ?? ''}
-Fotos disponíveis (use o índice para posicioná-las):
-${photos || '(nenhuma)'}
+O autor tem ${nFotos} foto(s), que o site posiciona sozinho ao longo do texto — NÃO se preocupe com imagens, cuide só do texto.
 
 RELATO BRUTO DO AUTOR:
 """
@@ -32,15 +31,15 @@ TAREFA
 Reescreva com clareza e ritmo de reportagem, SEM inventar fatos (só reorganize, corrija e enriqueça a linguagem do que o autor disse). Produza:
 1) um TÍTULO curto e marcante (máx. ~70 caracteres, evocativo, sem clichê);
 2) um SUBTÍTULO (linha fina) de uma frase que dê vontade de ler;
-3) o corpo em BLOCOS bem distribuídos.
+3) o corpo em BLOCOS de TEXTO bem distribuídos.
 
 REGRAS DE COMPOSIÇÃO
 - Abra com um parágrafo-lide forte, que situa o leitor na cena (não comece com "Visitei...").
 - Use de 2 a 4 subtítulos (heading level 2) temáticos para dar respiro à leitura.
-- Varie o tamanho dos parágrafos; prefira frases concretas e sensoriais.
+- Varie o tamanho dos parágrafos; prefira frases concretas e sensoriais. Faça de 4 a 8 parágrafos.
 - Inclua exatamente 1 "quote" (uma frase de destaque, tirada ou inspirada no relato).
 - Inclua 1 "tip" ("Minha dica", prática e útil) e, se fizer sentido, 1 "info" ("Vale saber").
-- Distribua as fotos ao longo do texto: a Foto 0 é a CAPA (já aparece no topo, NÃO use no corpo). Use as fotos de 1 em diante, cada uma UMA vez, entre parágrafos onde combinam; as que sobrarem entram numa "gallery" perto do fim.
+- NÃO gere blocos de imagem nem galeria — o site cuida das fotos.
 - Feche com um parágrafo curto de arremate/reflexão.
 
 FORMATO DE SAÍDA — responda SOMENTE com JSON válido, sem markdown, nesta forma:
@@ -52,9 +51,7 @@ FORMATO DE SAÍDA — responda SOMENTE com JSON válido, sem markdown, nesta for
     {"type":"heading","level":2,"text":"..."},
     {"type":"quote","text":"..."},
     {"type":"tip","title":"Minha dica","text":"..."},
-    {"type":"info","title":"Vale saber","text":"..."},
-    {"type":"image","photo": <índice>},
-    {"type":"gallery","photos":[<índices>]}
+    {"type":"info","title":"Vale saber","text":"..."}
   ]
 }`;
 };
@@ -119,7 +116,7 @@ async function callGemini(model: string, key: string, prompt: string): Promise<{
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { responseMimeType: 'application/json', temperature: 0.75, maxOutputTokens: 4096 },
+      generationConfig: { responseMimeType: 'application/json', temperature: 0.75, maxOutputTokens: 8192 },
     }),
   });
   if (!res.ok) return { ok: false, status: res.status, detail: (await res.text()).slice(0, 200) };

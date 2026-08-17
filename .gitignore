@@ -30,3 +30,11 @@ coverage
 .idea
 .vscode/*
 !.vscode/extensions.json
+
+# notas de deploy (não vão pro GitHub)
+DEPLOY.md
+
+# pacotes de atualização e lixeira local
+_to_delete/
+_tsp-*.zip
+*.zip

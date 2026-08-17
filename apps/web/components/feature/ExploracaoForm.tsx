@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { TRANSPORT_LABEL, type ArticleBlock, type TransportMode } from '@turistando/core';
+import { TRANSPORT_LABEL, composeArticle, type ArticleBlock, type PhotoRef, type TransportMode } from '@turistando/core';
 import { MultiImageUpload, type UploadedPhoto } from './MultiImageUpload';
 
 interface PlaceOpt { slug: string; name: string; neighborhoodName: string }
@@ -59,6 +59,14 @@ export function ExploracaoForm({ places, initial }: { places: PlaceOpt[]; initia
   const [error, setError] = useState<string | null>(null);
 
   const place = useMemo(() => places.find((p) => p.slug === placeSlug), [places, placeSlug]);
+
+  // Preview do jornal: intercala as fotos ATUAIS (mesma lógica da página publicada).
+  const previewBlocks = useMemo(() => {
+    const refs: PhotoRef[] = photos.map((p, i) => ({
+      id: `prev-${i}`, url: p.url, demo: false, width: p.width, height: p.height, alt: p.alt || title, caption: p.caption, order: i,
+    }));
+    return composeArticle(blocks ?? [], refs);
+  }, [blocks, photos, title]);
 
   function toggleMode(m: TransportMode) {
     setModes((cur) => (cur.includes(m) ? cur.filter((x) => x !== m) : [...cur, m]));
@@ -173,10 +181,11 @@ export function ExploracaoForm({ places, initial }: { places: PlaceOpt[]; initia
       </Section>
 
       {/* Preview */}
-      {blocks && blocks.length > 0 ? (
+      {previewBlocks.length > 0 ? (
         <Section n="✓" title="Preview do artigo (layout de jornal)">
+          <p className="coord" style={{ marginBottom: '1rem' }}>As fotos entram na ordem do gerenciador acima — reordene ou apague por lá e o preview (e o site) acompanham.</p>
           <div className="article" style={{ marginInline: 0 }}>
-            {blocks.map((b, i) => <PreviewBlock key={i} b={b} />)}
+            {previewBlocks.map((b, i) => <PreviewBlock key={i} b={b} />)}
           </div>
         </Section>
       ) : null}

@@ -152,20 +152,13 @@ export function buildExploration(
   };
 }
 
-/** Sem Gemini / sem blocos: divide o relato em parágrafos e intercala fotos. */
-export function fallbackArticle(rawText: string, photos: PhotoRef[]): ArticleBlock[] {
+/**
+ * Sem Gemini / sem blocos: divide o relato em parágrafos (só texto).
+ * As fotos NÃO entram aqui — a página intercala as fotos atuais no render
+ * (ver composeArticle no core), então o gerenciador de fotos é a fonte da verdade.
+ * `photos` é mantido na assinatura por compatibilidade.
+ */
+export function fallbackArticle(rawText: string, _photos: PhotoRef[]): ArticleBlock[] {
   const paras = (rawText ?? '').split(/\n{2,}/).map((s) => s.trim()).filter(Boolean);
-  const blocks: ArticleBlock[] = [];
-  let pi = 1; // foto 0 é capa (fica no hero), intercala a partir da 1
-  paras.forEach((p, i) => {
-    blocks.push({ type: 'paragraph', text: p });
-    if (i % 2 === 1 && photos[pi]) {
-      blocks.push({ type: 'image', photo: photos[pi]! });
-      pi += 1;
-    }
-  });
-  const rest = photos.slice(pi).filter((p) => p.url);
-  if (rest.length) blocks.push({ type: 'gallery', photos: rest });
-  if (blocks.length === 0 && photos.length) blocks.push({ type: 'gallery', photos });
-  return blocks;
+  return paras.map((p) => ({ type: 'paragraph', text: p }));
 }
