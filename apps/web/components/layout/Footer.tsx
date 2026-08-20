@@ -23,15 +23,18 @@ export async function Footer() {
           <div className="footer-col">
             <h4>Navegar</h4>
             <Link href="/explorar">Explorar</Link>
+            <Link href="/roteiros">Roteiros</Link>
             <Link href="/mapa">Mapa</Link>
             <Link href="/bairros">Bairros</Link>
             <Link href="/lugares">Lugares</Link>
             <Link href="/diario">Diário</Link>
+            <Link href="/tags">Tags</Link>
           </div>
           <div className="footer-col">
             <h4>O projeto</h4>
             <Link href="/sobre">Sobre</Link>
             <Link href="/minha-sao-paulo">Minha São Paulo</Link>
+            <Link href="/contato">Contato</Link>
             {siteConfig.socialLinks.map((s) => (
               <a key={s.label} href={s.href} target="_blank" rel="noreferrer noopener">
                 {s.label}

@@ -24,6 +24,7 @@ import { ExplorationCard, CategoryCard, NeighborhoodCard } from '@/components/ca
 import { SPMap } from '@/components/feature/SPMap';
 import { Reveal } from '@/components/feature/Reveal';
 import { CountUp } from '@/components/feature/CountUp';
+import { WeatherWidget } from '@/components/feature/WeatherWidget';
 
 export const dynamic = 'force-dynamic';
 
@@ -79,6 +80,7 @@ export default async function HomePage() {
               <Link href="/explorar" className="btn">Explorar São Paulo comigo <ArrowRight aria-hidden /></Link>
               <Link href="/mapa" className="btn btn-ghost">Ver no mapa <MapIcon aria-hidden /></Link>
             </div>
+            <div style={{ marginTop: '1.5rem' }}><WeatherWidget /></div>
             {latest && latestPlace ? (
               <div className="hero__meta">
                 <div>

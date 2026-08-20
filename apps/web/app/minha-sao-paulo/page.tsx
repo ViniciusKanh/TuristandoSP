@@ -38,12 +38,12 @@ export default async function MinhaSaoPauloPage() {
 
       <section className="section-tight">
         <div className="section-head"><h2 className="heading h2">Categorias mais visitadas</h2></div>
-        <div className="stack">
+        <div className="barchart">
           {topCats.map((c) => (
-            <Link key={c.category.slug} href={`/categorias/${c.category.slug}`} style={{ display: 'grid', gridTemplateColumns: '160px 1fr 40px', gap: '1rem', alignItems: 'center' }}>
-              <span className="u-label" style={{ color: 'var(--text-muted)' }}>{c.category.name}</span>
-              <span style={{ height: '14px', background: 'var(--accent)', width: `${(c.places / maxCat) * 100}%`, minWidth: '14px' }} />
-              <span className="coord">{c.places}</span>
+            <Link key={c.category.slug} href={`/categorias/${c.category.slug}`} className="barrow">
+              <span className="barrow__label">{c.category.name}</span>
+              <span className="barrow__track"><span className="barrow__fill" style={{ width: `${Math.max(6, (c.places / maxCat) * 100)}%` }} /></span>
+              <span className="barrow__val">{c.places}</span>
             </Link>
           ))}
         </div>
@@ -51,13 +51,18 @@ export default async function MinhaSaoPauloPage() {
 
       <section className="section-tight">
         <div className="section-head"><h2 className="heading h2">Bairros mais explorados</h2></div>
-        <div className="grid grid-3">
-          {hoods.slice(0, 6).map((h) => (
-            <Link key={h.neighborhood.slug} href={`/bairros/${h.neighborhood.slug}`} className="mini-card">
-              <div className="h3" style={{ fontSize: '1.3rem' }}>{h.neighborhood.name}</div>
-              <span className="coord">{h.places} lugares · {h.explorations} explorações</span>
-            </Link>
-          ))}
+        <div className="barchart">
+          {hoods.slice(0, 8).map((h) => {
+            const maxHood = Math.max(1, ...hoods.slice(0, 8).map((x) => x.explorations || x.places));
+            const val = h.explorations || h.places;
+            return (
+              <Link key={h.neighborhood.slug} href={`/bairros/${h.neighborhood.slug}`} className="barrow">
+                <span className="barrow__label">{h.neighborhood.name}</span>
+                <span className="barrow__track"><span className="barrow__fill barrow__fill--gold" style={{ width: `${Math.max(6, (val / maxHood) * 100)}%` }} /></span>
+                <span className="barrow__val">{val}</span>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

@@ -18,6 +18,9 @@ import { UrbanLabel, Rating, Coordinates, WouldReturnLabel, Tag } from '@/compon
 import { ArticleRenderer } from '@/components/feature/ArticleRenderer';
 import { ShareButton } from '@/components/feature/ShareButton';
 import { ExplorationCard } from '@/components/cards';
+import { ReadingProgress } from '@/components/feature/ReadingProgress';
+import { Lightbox } from '@/components/feature/Lightbox';
+import { Comments } from '@/components/feature/Comments';
 
 export const dynamic = 'force-dynamic';
 
@@ -53,7 +56,12 @@ export default async function ExplorationPage({ params }: { params: { slug: stri
   // Fotos são a fonte da verdade: reconstrói o corpo com a ordem atual das fotos.
   const renderBlocks = composeArticle(exp.article, exp.photos);
 
-  const others = (await getPublishedExplorations()).filter((e) => e.slug !== exp.slug).slice(0, 3);
+  const published = await getPublishedExplorations();
+  const selfIdx = published.findIndex((e) => e.slug === exp.slug);
+  // lista vem do mais novo pro mais antigo: "próxima" = mais recente, "anterior" = mais antiga
+  const newer = selfIdx > 0 ? published[selfIdx - 1] : undefined;
+  const older = selfIdx >= 0 && selfIdx < published.length - 1 ? published[selfIdx + 1] : undefined;
+  const others = published.filter((e) => e.slug !== exp.slug).slice(0, 3);
   const otherPlaces = await Promise.all(others.map((o) => getPlace(o.placeSlug)));
 
   const jsonLd = {
@@ -76,6 +84,8 @@ export default async function ExplorationPage({ params }: { params: { slug: stri
 
   return (
     <article>
+      <ReadingProgress />
+      <Lightbox />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <div className="container container-wide" style={{ paddingTop: '1.5rem' }}>
@@ -183,15 +193,37 @@ export default async function ExplorationPage({ params }: { params: { slug: stri
         </section>
       ) : null}
 
+      {/* ANTERIOR / PRÓXIMA */}
+      {newer || older ? (
+        <nav className="expnav container container-wide" aria-label="Navegar entre explorações">
+          {older ? (
+            <Link href={`/exploracoes/${older.slug}`} className="expnav__link expnav__link--prev">
+              <span className="expnav__dir">← parada anterior</span>
+              <span className="expnav__title">{older.title}</span>
+            </Link>
+          ) : <span />}
+          {newer ? (
+            <Link href={`/exploracoes/${newer.slug}`} className="expnav__link expnav__link--next">
+              <span className="expnav__dir">próxima parada →</span>
+              <span className="expnav__title">{newer.title}</span>
+            </Link>
+          ) : <span />}
+        </nav>
+      ) : null}
+
       {/* LEIA TAMBÉM */}
       {others.length ? (
-        <section className="section-tight container container-wide" style={{ paddingBottom: '4rem' }}>
+        <section className="section-tight container container-wide">
           <div className="section-head"><h2 className="heading h2">Leia também</h2><Link href="/diario" className="tag">todo o diário</Link></div>
           <div className="grid grid-3">
             {others.map((o, i) => <ExplorationCard key={o.id} exp={o} place={otherPlaces[i] ?? undefined} />)}
           </div>
         </section>
       ) : null}
+
+      {/* COMENTÁRIOS (Giscus, se configurado) */}
+      <Comments />
+      <div style={{ paddingBottom: '4rem' }} />
     </article>
   );
 }

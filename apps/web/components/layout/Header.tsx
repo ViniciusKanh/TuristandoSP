@@ -6,6 +6,7 @@ import { HeaderSearch } from './HeaderSearch';
 
 const NAV = [
   { href: '/explorar', label: 'Explorar' },
+  { href: '/roteiros', label: 'Roteiros' },
   { href: '/lugares', label: 'Lugares' },
   { href: '/bairros', label: 'Bairros' },
   { href: '/mapa', label: 'Mapa' },

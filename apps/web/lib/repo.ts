@@ -117,6 +117,18 @@ export async function getPlacesInNeighborhood(slug: string): Promise<Place[]> {
   return (await getAllPlaces()).filter((p) => p.neighborhood === slug);
 }
 
+export async function getAllTags(): Promise<{ tag: string; count: number }[]> {
+  const exps = await getPublishedExplorations();
+  const counts = new Map<string, number>();
+  for (const e of exps) for (const t of e.tags ?? []) counts.set(t, (counts.get(t) ?? 0) + 1);
+  return [...counts.entries()].map(([tag, count]) => ({ tag, count })).sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
+}
+
+export async function getExplorationsByTag(tag: string): Promise<Exploration[]> {
+  const exps = await getPublishedExplorations();
+  return exps.filter((e) => (e.tags ?? []).includes(tag));
+}
+
 export async function getPlacesByCategory(slug: string): Promise<Place[]> {
   return (await getAllPlaces()).filter((p) => p.categories.includes(slug));
 }

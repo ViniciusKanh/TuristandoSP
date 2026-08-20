@@ -46,9 +46,10 @@ export interface SPMapProps {
   onPick?: (lat: number, lng: number) => void;
   height?: number | string;
   filters?: boolean;
+  nearby?: boolean;
 }
 
-export function SPMap({ markers = [], picker = false, initial, onPick, height = 520, filters = false }: SPMapProps) {
+export function SPMap({ markers = [], picker = false, initial, onPick, height = 520, filters = false, nearby = false }: SPMapProps) {
   const ref = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const LRef = useRef<any>(null);
@@ -183,6 +184,39 @@ export function SPMap({ markers = [], picker = false, initial, onPick, height = 
           },
         });
         new LegendCtrl({ position: 'bottomleft' }).addTo(map);
+
+        // controle: "perto de mim" (geolocalização do leitor)
+        if (nearby && typeof navigator !== 'undefined' && navigator.geolocation) {
+          let meMarker: any = null;
+          const NearbyCtrl = L.Control.extend({
+            onAdd() {
+              const el = L.DomUtil.create('button', 'sp-map__near');
+              el.type = 'button';
+              el.title = 'Ver lugares perto de mim';
+              el.innerHTML = '📍 Perto de mim';
+              L.DomEvent.on(el, 'click', (ev: any) => {
+                L.DomEvent.stop(ev);
+                el.innerHTML = 'Localizando…';
+                navigator.geolocation.getCurrentPosition(
+                  (pos) => {
+                    const { latitude, longitude } = pos.coords;
+                    if (meMarker) meMarker.remove();
+                    meMarker = L.marker([latitude, longitude], {
+                      icon: L.divIcon({ className: 'sp-me', html: '<span class="sp-me__dot"></span>', iconSize: [18, 18], iconAnchor: [9, 9] }),
+                    }).addTo(map);
+                    meMarker.bindPopup('<b>Você está aqui</b>');
+                    map.setView([latitude, longitude], 14, { animate: true });
+                    el.innerHTML = '📍 Perto de mim';
+                  },
+                  () => { el.innerHTML = '📍 Perto de mim'; alert('Não consegui pegar sua localização. Verifique a permissão do navegador.'); },
+                  { enableHighAccuracy: true, timeout: 8000 },
+                );
+              });
+              return el;
+            },
+          });
+          new NearbyCtrl({ position: 'bottomright' }).addTo(map);
+        }
 
         setReady(true);
       }

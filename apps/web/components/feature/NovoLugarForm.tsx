@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { categories, REGIONS, DISTRICT_REGION } from '@turistando/core';
 import { SPMap } from './SPMap';
+import { GeocodeButton } from './GeocodeButton';
 import { ImageUpload } from './ImageUpload';
 
 export interface PlaceFormInitial {
@@ -265,6 +266,9 @@ export function PlaceForm({ initial }: { initial?: PlaceFormInitial }) {
 
       <div style={{ position: 'sticky', top: '80px' }}>
         <div className="filter-group__label">Marque no mapa (clique ou arraste o pino) — só São Paulo capital</div>
+        <div style={{ marginBottom: '0.75rem' }}>
+          <GeocodeButton getQuery={() => [street, bairro].filter(Boolean).join(', ')} onResult={(la, ln) => { setLat(la); setLng(ln); }} />
+        </div>
         <SPMap picker initial={{ lat, lng }} onPick={(la, ln) => { setLat(la); setLng(ln); }} height={420} />
         <div className="coord" style={{ marginTop: '0.75rem', display: 'flex', gap: '1rem' }}>
           <span>LAT {lat.toFixed(6)}</span>

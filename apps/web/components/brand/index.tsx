@@ -52,7 +52,7 @@ export function TransportBadge({ mode, detail }: { mode: TransportMode; detail?:
 }
 
 export function Tag({ slug, children }: { slug?: string; children: React.ReactNode }) {
-  if (slug) return <Link className="tag" href={`/explorar?tag=${slug}`}>{children}</Link>;
+  if (slug) return <Link className="tag" href={`/tags/${slug}`}>{children}</Link>;
   return <span className="tag">{children}</span>;
 }
 

@@ -9,6 +9,8 @@ import {
   formatDateShort,
 } from '@turistando/core';
 import { getPlace, getExplorationsForPlace, getRelatedPlaces, placeNeighborhoodName } from '@/lib/repo';
+import { WikiCard } from '@/components/feature/WikiCard';
+import { HolidayNote } from '@/components/feature/HolidayNote';
 import { Photo } from '@/components/brand/Photo';
 import { UrbanLabel, Coordinates, Stamp, Rating } from '@/components/brand';
 import { PlaceCard } from '@/components/cards';
@@ -110,6 +112,11 @@ export default async function PlacePage({ params }: { params: { slug: string } }
           ))}
         </div>
       </section>
+
+      <div className="section-tight container container-wide" style={{ paddingBottom: 0 }}>
+        <HolidayNote />
+        <WikiCard query={place.name} />
+      </div>
 
       <section className="section-tight container container-wide">
         <div className="section-head">

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { categoryBySlug, siteConfig } from '@turistando/core';
 import { getPlacesInNeighborhood, getExplorationsForPlace, getNeighborhoodView } from '@/lib/repo';
 import { UrbanLabel } from '@/components/brand';
+import { WikiCard } from '@/components/feature/WikiCard';
 import { PlaceCard } from '@/components/cards';
 
 export const dynamic = 'force-dynamic';
@@ -45,6 +46,10 @@ export default async function BairroPage({ params }: { params: { slug: string } 
           ))}
         </div>
       </section>
+
+      <div className="section-tight container container-wide" style={{ paddingBottom: 0 }}>
+        <WikiCard query={`${n.name} (bairro de São Paulo)`} label={`Sobre ${n.name}`} />
+      </div>
 
       <section className="section-tight container container-wide" style={{ paddingBottom: '5rem' }}>
         <div className="section-head"><h2 className="heading h2">Todos os lugares no bairro</h2></div>
