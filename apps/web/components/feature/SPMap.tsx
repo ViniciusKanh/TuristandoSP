@@ -204,9 +204,18 @@ export function SPMap({ markers = [], picker = false, initial, onPick, height = 
                     meMarker = L.marker([latitude, longitude], {
                       icon: L.divIcon({ className: 'sp-me', html: '<span class="sp-me__dot"></span>', iconSize: [18, 18], iconAnchor: [9, 9] }),
                     }).addTo(map);
-                    meMarker.bindPopup('<b>Você está aqui</b>');
+                    meMarker.bindPopup('<b>Você está aqui</b>').openPopup();
                     map.setView([latitude, longitude], 14, { animate: true });
                     el.innerHTML = '📍 Perto de mim';
+                    // reverse geocode (Nominatim) — mostra o bairro do leitor
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&zoom=14&lat=${latitude}&lon=${longitude}`, { headers: { accept: 'application/json' } })
+                      .then((r) => r.json())
+                      .then((j: any) => {
+                        const a = j?.address ?? {};
+                        const hood = a.suburb || a.neighbourhood || a.city_district || a.town || a.city;
+                        if (hood && meMarker) meMarker.setPopupContent(`<b>Você está aqui</b><br/>${hood}`).openPopup();
+                      })
+                      .catch(() => { /* silencioso */ });
                   },
                   () => { el.innerHTML = '📍 Perto de mim'; alert('Não consegui pegar sua localização. Verifique a permissão do navegador.'); },
                   { enableHighAccuracy: true, timeout: 8000 },

@@ -10,6 +10,31 @@ export interface Weather {
   emoji: string;
   sunrise: string; // HH:MM
   sunset: string; // HH:MM
+  aqi?: number;
+  aqiLabel?: string;
+}
+
+function aqiLabel(aqi: number): string {
+  if (aqi <= 20) return 'ar ótimo';
+  if (aqi <= 40) return 'ar bom';
+  if (aqi <= 60) return 'ar moderado';
+  if (aqi <= 80) return 'ar ruim';
+  if (aqi <= 100) return 'ar muito ruim';
+  return 'ar péssimo';
+}
+
+async function getAirQuality(): Promise<{ aqi: number; aqiLabel: string } | null> {
+  try {
+    const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${LAT}&longitude=${LNG}&current=european_aqi&timezone=America%2FSao_Paulo`;
+    const res = await fetch(url, { next: { revalidate: 1800 } });
+    if (!res.ok) return null;
+    const j = (await res.json()) as { current?: { european_aqi?: number } };
+    const aqi = j.current?.european_aqi;
+    if (typeof aqi !== 'number') return null;
+    return { aqi: Math.round(aqi), aqiLabel: aqiLabel(aqi) };
+  } catch {
+    return null;
+  }
 }
 
 // WMO weather codes → PT + emoji
@@ -40,6 +65,7 @@ export async function getWeather(): Promise<Weather | null> {
     };
     const code = j.current?.weather_code ?? 0;
     const d = describe(code);
+    const air = await getAirQuality();
     return {
       temp: Math.round(j.current?.temperature_2m ?? 0),
       code,
@@ -47,6 +73,8 @@ export async function getWeather(): Promise<Weather | null> {
       emoji: d.emoji,
       sunrise: hhmm(j.daily?.sunrise?.[0]),
       sunset: hhmm(j.daily?.sunset?.[0]),
+      aqi: air?.aqi,
+      aqiLabel: air?.aqiLabel,
     };
   } catch {
     return null;

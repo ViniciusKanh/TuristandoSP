@@ -11,6 +11,7 @@ import {
 import { getPlace, getExplorationsForPlace, getRelatedPlaces, placeNeighborhoodName } from '@/lib/repo';
 import { WikiCard } from '@/components/feature/WikiCard';
 import { HolidayNote } from '@/components/feature/HolidayNote';
+import { NearbyPOIs } from '@/components/feature/NearbyPOIs';
 import { Photo } from '@/components/brand/Photo';
 import { UrbanLabel, Coordinates, Stamp, Rating } from '@/components/brand';
 import { PlaceCard } from '@/components/cards';
@@ -139,6 +140,8 @@ export default async function PlacePage({ params }: { params: { slug: string } }
           </div>
         )}
       </section>
+
+      <NearbyPOIs lat={place.geo.lat} lng={place.geo.lng} />
 
       <section className="section-tight container container-wide" style={{ paddingBottom: '5rem' }}>
         <div className="section-head"><div><UrbanLabel>Recomendações</UrbanLabel><h2 className="heading h2" style={{ marginTop: '0.6rem' }}>Perto e parecido</h2></div></div>

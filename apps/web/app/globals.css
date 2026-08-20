@@ -682,3 +682,44 @@ select.input { appearance: none; background-image: linear-gradient(45deg, transp
 .roteiro-card__title { font-family: var(--font-heading); font-weight: 700; font-size: 1.3rem; color: var(--text); margin-top: 0.2rem; }
 .roteiro-card__desc { color: var(--text-muted); font-size: 0.95rem; line-height: 1.55; flex: 1; }
 .roteiro-card__count { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.05em; color: var(--accent); margin-top: 0.5rem; }
+
+/* ===================== recursos v3 ===================== */
+/* pular para o conteúdo (acessibilidade) */
+.skip-link { position: fixed; top: -120px; left: 1rem; z-index: 200; background: var(--accent); color: var(--on-accent); padding: 0.6rem 1rem; border-radius: 0 0 var(--radius-sm) var(--radius-sm); font-weight: 600; transition: top 0.2s ease; }
+.skip-link:focus { top: 0; }
+
+/* ouvir a matéria + ler depois (ações da byline) */
+.exp-byline__actions { display: inline-flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; margin-left: auto; }
+.listen { display: inline-flex; align-items: center; gap: 0.4rem; }
+.listen__btn, .savebtn { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.03em; padding: 0.45rem 0.8rem; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease; }
+.listen__btn:hover, .savebtn:hover { border-color: var(--text); background: var(--surface-sunk); }
+.listen__stop { width: 30px; height: 30px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--accent); font-size: 0.68rem; }
+.savebtn.is-saved { background: var(--gold); border-color: var(--gold); color: #2A1E13; }
+
+/* qualidade do ar */
+.weather__aqi { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-faint); }
+
+/* POIs por perto */
+.poi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.7rem; }
+.poi { display: flex; align-items: center; gap: 0.7rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); padding: 0.7rem 0.9rem; transition: border-color 0.15s ease, transform 0.2s ease; }
+.poi:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+.poi__emoji { font-size: 1.3rem; line-height: 1; }
+.poi__name { font-weight: 600; font-size: 0.95rem; color: var(--text); }
+.poi__kind { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
+
+/* newsletter */
+.newsletter { display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; max-width: 30rem; margin-inline: auto; }
+.newsletter .input { flex: 1; min-width: 210px; }
+
+/* chip ativo (arquivo do diário) */
+.chip[aria-current="page"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+
+/* ===================== modernização sutil (mesma identidade) ===================== */
+.mini-card, .exp-card, .place-card, .roteiro-card, .timeline__card, .poi, .btn, .chip, .tag { transition-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1); }
+.btn:active { transform: translateY(0); }
+.card-lift { transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.18s ease; }
+.card-lift:hover { transform: translateY(-4px); box-shadow: var(--shadow-soft); }
+/* imagens carregam com um leve respiro */
+.photo img { background: var(--surface-sunk); }
+/* foco mais visível e coerente com a identidade */
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }

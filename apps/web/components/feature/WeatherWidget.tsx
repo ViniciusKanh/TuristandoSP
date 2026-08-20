@@ -8,6 +8,7 @@ export async function WeatherWidget({ onBand = false }: { onBand?: boolean }) {
     <div className={`weather ${onBand ? 'weather--band' : ''}`}>
       <span className="weather__now">{w.emoji} {w.temp}°</span>
       <span className="weather__label">{w.label} em São Paulo</span>
+      {w.aqiLabel ? <span className="weather__aqi">· {w.aqiLabel}</span> : null}
       {w.sunset ? <span className="weather__sun">☀ nascer {w.sunrise} · pôr do sol {w.sunset}</span> : null}
     </div>
   );

@@ -34,6 +34,7 @@ export async function Footer() {
             <h4>O projeto</h4>
             <Link href="/sobre">Sobre</Link>
             <Link href="/minha-sao-paulo">Minha São Paulo</Link>
+            <Link href="/salvos">Ler depois</Link>
             <Link href="/contato">Contato</Link>
             {siteConfig.socialLinks.map((s) => (
               <a key={s.label} href={s.href} target="_blank" rel="noreferrer noopener">

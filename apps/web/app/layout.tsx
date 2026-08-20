@@ -4,6 +4,8 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { BackToTop } from '@/components/feature/BackToTop';
 import { SITE_URL } from '@/lib/site-url';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 
 // Fontes carregadas via <link> (as famílias e os fallbacks vivem em globals.css).
@@ -60,14 +62,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="stylesheet" href={GOOGLE_FONTS} />
+        <link rel="alternate" type="application/rss+xml" title="Turistando SP — RSS" href="/rss.xml" />
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
       </head>
       <body>
+        <a href="#conteudo" className="skip-link">Pular para o conteúdo</a>
         <Header />
         <main id="conteudo">{children}</main>
         <Footer />
         <BackToTop />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

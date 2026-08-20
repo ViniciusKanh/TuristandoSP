@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { put } from '@vercel/blob';
 import { SESSION_COOKIE, verifySession } from '@/lib/auth';
 import { insertImage } from '@/lib/repo';
 
@@ -32,6 +33,21 @@ export async function POST(req: Request) {
   const alt = String(form.get('alt') ?? '');
   const width = Number(form.get('width') ?? 0) || undefined;
   const height = Number(form.get('height') ?? 0) || undefined;
+
+  // Se houver Vercel Blob configurado, guarda lá (mais leve/rápido). Senão, no banco.
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      const ext = (file.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
+      const blob = await put(`turistando/${id}.${ext}`, buf, {
+        access: 'public',
+        contentType: file.type,
+        token: process.env.BLOB_READ_WRITE_TOKEN,
+      });
+      return NextResponse.json({ data: { id, url: blob.url, width, height, size: buf.byteLength } }, { status: 201 });
+    } catch {
+      // se o Blob falhar, cai para o banco
+    }
+  }
 
   await insertImage({ id, mime: file.type, data: buf.toString('base64'), width, height, alt, size: buf.byteLength });
 

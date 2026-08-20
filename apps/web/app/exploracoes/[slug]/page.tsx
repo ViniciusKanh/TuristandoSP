@@ -21,6 +21,8 @@ import { ExplorationCard } from '@/components/cards';
 import { ReadingProgress } from '@/components/feature/ReadingProgress';
 import { Lightbox } from '@/components/feature/Lightbox';
 import { Comments } from '@/components/feature/Comments';
+import { ListenButton } from '@/components/feature/ListenButton';
+import { SaveButton } from '@/components/feature/SaveButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -133,7 +135,11 @@ export default async function ExplorationPage({ params }: { params: { slug: stri
           <span className="u-label" style={{ color: 'var(--text-muted)' }}>Por {siteConfig.authorName}</span>
           <span className="coord">{readMin} min de leitura</span>
           {r.overall ? <Rating value={r.overall} /> : null}
-          <span style={{ marginLeft: 'auto' }}><ShareButton title={exp.title} path={`/exploracoes/${exp.slug}`} /></span>
+          <span className="exp-byline__actions">
+            <ListenButton />
+            <SaveButton slug={exp.slug} title={exp.title} place={place?.name} />
+            <ShareButton title={exp.title} path={`/exploracoes/${exp.slug}`} />
+          </span>
         </div>
       </div>
 

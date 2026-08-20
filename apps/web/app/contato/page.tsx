@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getSettings } from '@/lib/repo';
 import { UrbanLabel } from '@/components/brand';
+import { NewsletterForm } from '@/components/feature/NewsletterForm';
 
 export const metadata: Metadata = {
   title: 'Contato',
@@ -43,7 +44,11 @@ export default async function ContatoPage() {
           </p>
         )}
 
-        <div style={{ marginTop: '3rem' }}>
+        <div style={{ marginTop: '2.5rem' }}>
+          <NewsletterForm />
+        </div>
+
+        <div style={{ marginTop: '2.5rem' }}>
           <Link href="/diario" className="btn">Ver as últimas explorações</Link>
         </div>
       </div>

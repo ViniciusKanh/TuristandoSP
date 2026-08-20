@@ -129,6 +129,21 @@ export async function getExplorationsByTag(tag: string): Promise<Exploration[]> 
   return exps.filter((e) => (e.tags ?? []).includes(tag));
 }
 
+export async function getExplorationYears(): Promise<{ year: number; count: number }[]> {
+  const exps = await getPublishedExplorations();
+  const counts = new Map<number, number>();
+  for (const e of exps) {
+    const y = Number((e.date || '').slice(0, 4));
+    if (y) counts.set(y, (counts.get(y) ?? 0) + 1);
+  }
+  return [...counts.entries()].map(([year, count]) => ({ year, count })).sort((a, b) => b.year - a.year);
+}
+
+export async function getExplorationsByYear(year: number): Promise<Exploration[]> {
+  const exps = await getPublishedExplorations();
+  return exps.filter((e) => Number((e.date || '').slice(0, 4)) === year);
+}
+
 export async function getPlacesByCategory(slug: string): Promise<Place[]> {
   return (await getAllPlaces()).filter((p) => p.categories.includes(slug));
 }
