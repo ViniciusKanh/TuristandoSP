@@ -15,6 +15,7 @@ import {
   getCategoryCounts,
   getNeighborhoodSummaries,
   getMapMarkers,
+  getJourneyPath,
   getSettings,
 } from '@/lib/repo';
 import { Photo } from '@/components/brand/Photo';
@@ -25,21 +26,39 @@ import { SPMap } from '@/components/feature/SPMap';
 import { Reveal } from '@/components/feature/Reveal';
 import { CountUp } from '@/components/feature/CountUp';
 import { WeatherWidget } from '@/components/feature/WeatherWidget';
+import { Constellation, type ConstNode } from '@/components/feature/Constellation';
+import { RandomButton } from '@/components/feature/RandomButton';
 
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const [latest, feedAll, stats, categories, hoods, markers, settings] = await Promise.all([
+  const [latest, feedAll, stats, categories, hoods, markers, journeyPath, settings] = await Promise.all([
     getLatestExploration(),
     getPublishedExplorations(),
     getStats(),
     getCategoryCounts(),
     getNeighborhoodSummaries(),
     getMapMarkers(),
+    getJourneyPath(),
     getSettings(),
   ]);
   const feed = feedAll.slice(0, 4);
   const journey = feedAll.slice(0, 6);
+  const randomSlugs = feedAll.map((e) => e.slug);
+  const constNodes: ConstNode[] = feedAll.map((e) => {
+    const p = placeBySlug.get(e.placeSlug);
+    const hood = p ? neighborhoodBySlug.get(p.neighborhood)?.name ?? p.neighborhoodName ?? p.neighborhood : '';
+    return {
+      slug: e.slug,
+      number: e.number,
+      title: e.title,
+      place: p?.name ?? '',
+      hood: hood ?? '',
+      hue: p?.coverImage?.hue ?? 30,
+      cats: e.categories ?? p?.categories ?? [],
+      tags: e.tags ?? [],
+    };
+  });
   const latestPlace = latest ? placeBySlug.get(latest.placeSlug) : undefined;
   const latestHood = latestPlace ? neighborhoodBySlug.get(latestPlace.neighborhood) : undefined;
   const latestTotal = latest ? latest.expenses.reduce((s, e) => s + e.amount, 0) : 0;
@@ -71,14 +90,15 @@ export default async function HomePage() {
         </div>
         <div className="hero__content">
           <div className="container container-wide">
-            <UrbanLabel>{siteName} · {formatExplorationNumber(stats.explorations)}</UrbanLabel>
+            <UrbanLabel>Oi, eu sou o {siteConfig.authorName.split(' ')[0]} · {formatExplorationNumber(stats.explorations)}</UrbanLabel>
             <h1 className="display hero-title" style={{ marginTop: '1.5rem', maxWidth: '15ch' }}>{headline}</h1>
             <p className="lead" style={{ marginTop: '1.5rem' }}>
-              Então estou conhecendo um lugar por vez. Bairros, museus, comida, história e lugares que encontrei pelas ruas da cidade.
+              Então vem comigo conhecer ela um lugar por vez. A cada semana eu escolho um canto — um bairro, um museu, uma esquina — vou a pé, fotografo e conto aqui como foi. Fica à vontade pra bisbilhotar.
             </p>
             <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', marginTop: '2rem' }}>
-              <Link href="/explorar" className="btn">Explorar São Paulo comigo <ArrowRight aria-hidden /></Link>
+              <Link href="/explorar" className="btn">Explorar comigo <ArrowRight aria-hidden /></Link>
               <Link href="/mapa" className="btn btn-ghost">Ver no mapa <MapIcon aria-hidden /></Link>
+              {randomSlugs.length ? <RandomButton slugs={randomSlugs} className="btn btn-ghost">🎲 Me surpreenda</RandomButton> : null}
             </div>
             <div style={{ marginTop: '1.5rem' }}><WeatherWidget /></div>
             {latest && latestPlace ? (
@@ -156,6 +176,24 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* CONSTELAÇÃO — conecta as explorações */}
+      {constNodes.length > 1 ? (
+        <section className="section container container-wide">
+          <div className="section-head">
+            <div>
+              <UrbanLabel>Tudo se conecta</UrbanLabel>
+              <h2 className="display title-lg" style={{ marginTop: '0.75rem' }}>A teia da minha São Paulo</h2>
+              <p className="lead" style={{ marginTop: '0.75rem', maxWidth: '54ch' }}>
+                Nenhuma parada vive sozinha. Passe entre os pontos e veja como as explorações se ligam por bairro, categoria e tema.
+              </p>
+            </div>
+          </div>
+          <Reveal>
+            <Constellation nodes={constNodes} />
+          </Reveal>
+        </section>
+      ) : null}
+
       {/* JORNADA — timeline */}
       {journey.length > 1 ? (
         <section className="section-tight container">
@@ -230,7 +268,7 @@ export default async function HomePage() {
           <div><UrbanLabel>Mapa · Rotas pela cidade</UrbanLabel><h2 className="display title-lg" style={{ marginTop: '0.75rem' }}>Cada ponto tem uma história</h2></div>
           <Link href="/mapa" className="btn btn-ghost btn-sm">Abrir mapa <MapIcon aria-hidden /></Link>
         </div>
-        <SPMap markers={markers} height={460} />
+        <SPMap markers={markers} journey={journeyPath} height={460} />
       </section>
 
       {/* CHAMADA FINAL */}

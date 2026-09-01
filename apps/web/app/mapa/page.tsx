@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getMapMarkers, getStats } from '@/lib/repo';
+import { getMapMarkers, getStats, getJourneyPath } from '@/lib/repo';
 import { UrbanLabel } from '@/components/brand';
 import { SPMap } from '@/components/feature/SPMap';
 import { WeatherWidget } from '@/components/feature/WeatherWidget';
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function MapaPage() {
-  const [markers, stats] = await Promise.all([getMapMarkers(), getStats()]);
+  const [markers, stats, journey] = await Promise.all([getMapMarkers(), getStats(), getJourneyPath()]);
 
   return (
     <div className="section container container-wide">
@@ -32,7 +32,7 @@ export default async function MapaPage() {
 
       <div style={{ margin: '0 0 1.25rem' }}><WeatherWidget /></div>
 
-      <SPMap markers={markers} height={600} filters nearby />
+      <SPMap markers={markers} journey={journey} height={600} filters nearby />
 
       <p className="coord" style={{ marginTop: '1rem', textAlign: 'center', color: 'var(--text-faint)' }}>
         Clique num ponto para ver o lugar · o mapa é limitado à cidade de São Paulo

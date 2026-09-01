@@ -47,13 +47,15 @@ export interface SPMapProps {
   height?: number | string;
   filters?: boolean;
   nearby?: boolean;
+  journey?: { lat: number; lng: number }[];
 }
 
-export function SPMap({ markers = [], picker = false, initial, onPick, height = 520, filters = false, nearby = false }: SPMapProps) {
+export function SPMap({ markers = [], picker = false, initial, onPick, height = 520, filters = false, nearby = false, journey = [] }: SPMapProps) {
   const ref = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const LRef = useRef<any>(null);
   const layerRef = useRef<any>(null);
+  const journeyRef = useRef<any>(null);
   const tileRef = useRef<any>(null);
   const countElRef = useRef<HTMLSpanElement | null>(null);
   const [ready, setReady] = useState(false);
@@ -171,6 +173,30 @@ export function SPMap({ markers = [], picker = false, initial, onPick, height = 
           },
         });
         new FitCtrl({ position: 'topright' }).addTo(map);
+
+        // linha da jornada: liga as explorações na ordem cronológica
+        if (journey.length >= 2) {
+          journeyRef.current = L.polyline(journey.map((p) => [p.lat, p.lng]), {
+            className: 'sp-journey', color: '#C2502F', weight: 3, opacity: 0.85, dashArray: '1 9', lineCap: 'round', lineJoin: 'round',
+          }).addTo(map);
+          const JourneyCtrl = L.Control.extend({
+            onAdd() {
+              const el = L.DomUtil.create('button', 'sp-map__fit sp-map__journey is-on');
+              el.type = 'button';
+              el.title = 'Mostrar/ocultar a linha da jornada';
+              el.innerHTML = '✦ Jornada';
+              let on = true;
+              L.DomEvent.on(el, 'click', (ev: any) => {
+                L.DomEvent.stop(ev);
+                on = !on;
+                if (on) { journeyRef.current.addTo(map); el.classList.add('is-on'); }
+                else { journeyRef.current.remove(); el.classList.remove('is-on'); }
+              });
+              return el;
+            },
+          });
+          new JourneyCtrl({ position: 'topright' }).addTo(map);
+        }
 
         // legenda flutuante (canto inferior esquerdo)
         const LegendCtrl = L.Control.extend({

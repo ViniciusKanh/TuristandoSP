@@ -144,6 +144,17 @@ export async function getExplorationsByYear(year: number): Promise<Exploration[]
   return exps.filter((e) => Number((e.date || '').slice(0, 4)) === year);
 }
 
+/** Caminho da jornada: coordenadas dos lugares na ordem cronológica das explorações. */
+export async function getJourneyPath(): Promise<{ lat: number; lng: number }[]> {
+  const [exps, places] = await Promise.all([getPublishedExplorations(), getAllPlaces()]);
+  const bySlug = new Map(places.map((p) => [p.slug, p]));
+  return [...exps]
+    .reverse()
+    .map((e) => bySlug.get(e.placeSlug)?.geo)
+    .filter((g): g is { lat: number; lng: number } => Boolean(g))
+    .map((g) => ({ lat: g.lat, lng: g.lng }));
+}
+
 export async function getPlacesByCategory(slug: string): Promise<Place[]> {
   return (await getAllPlaces()).filter((p) => p.categories.includes(slug));
 }
