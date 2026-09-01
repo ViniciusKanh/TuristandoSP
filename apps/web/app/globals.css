@@ -772,3 +772,21 @@ path.sp-journey { animation: journey-flow 18s linear infinite; }
 .tools-strip { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.2rem; }
 .tools-strip__item { display: inline-flex; align-items: center; gap: 0.4rem; border: 1px solid var(--border-strong); border-radius: 999px; padding: 0.5rem 0.9rem; font-size: 0.85rem; font-weight: 600; color: var(--text); background: transparent; transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease; }
 .tools-strip__item:hover { background: var(--surface); border-color: var(--text); transform: translateY(-2px); }
+
+/* ===================== teia v2 (rótulos, legenda, força) ===================== */
+.constel__stage { position: relative; }
+.constel__anchor { cursor: pointer; }
+.constel__edge { stroke: var(--border-strong); opacity: 0.55; transition: opacity 0.2s ease, stroke 0.2s ease; }
+.constel__edge.is-on { stroke: var(--accent); opacity: 0.9; }
+.constel__edge.is-off { opacity: 0.1; }
+.constel__label {
+  fill: var(--text-muted); font-family: var(--font-body); font-size: 13px; font-weight: 600;
+  paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round;
+  pointer-events: none; transition: fill 0.2s ease;
+}
+.constel__node.is-active .constel__label, .constel__node:hover .constel__label { fill: var(--text); }
+.constel__node.is-dim { opacity: 0.2; }
+.constel__legend { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; padding: 0.7rem 0.4rem 0.2rem; }
+.constel__legend-h { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); }
+.constel__cat { border: 1px solid var(--border-strong); border-radius: 999px; padding: 0.28rem 0.7rem; font-size: 0.76rem; color: var(--text-muted); background: transparent; transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease; }
+.constel__cat:hover, .constel__cat.is-on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }

@@ -43,7 +43,7 @@ export default async function HomePage() {
     getJourneyPath(),
     getSettings(),
   ]);
-  const feed = feedAll.slice(0, 4);
+  const feed = feedAll.slice(0, 6);
   const journey = feedAll.slice(0, 6);
   const randomSlugs = feedAll.map((e) => e.slug);
   const planPlaces: PlanPlace[] = markers.map((m) => ({
@@ -141,6 +141,50 @@ export default async function HomePage() {
         </Reveal>
       </section>
 
+      {/* ÚLTIMA EXPLORAÇÃO — destaque grande */}
+      {latest && latestPlace ? (
+        <section className="section-tight container container-wide">
+          <Reveal>
+            <div className="eyebrow"><UrbanLabel>Minhas experiências · última parada {formatExplorationNumber(latest.number)}</UrbanLabel></div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 1fr)', gap: 'clamp(1.5rem, 4vw, 3.5rem)', alignItems: 'center' }} className="feature-split">
+              <Photo photo={latest.photos[0] ?? latestPlace.coverImage} />
+              <div className="stack">
+                <span className="u-label" style={{ color: 'var(--text-faint)' }}>{latestHood?.name} · {siteConfig.city}</span>
+                <h2 className="display title-lg">{latest.title}</h2>
+                <p className="lead">{latest.subtitle}</p>
+                <div className="ficha" style={{ marginTop: '1rem' }}>
+                  <div className="ficha__cell"><div className="ficha__val">{Math.round(latest.durationMinutes / 60)}</div><div className="ficha__key">Tempo · {formatDuration(latest.durationMinutes)}</div></div>
+                  <div className="ficha__cell"><div className="ficha__val">{latest.rating.overall}</div><div className="ficha__key">Nota</div></div>
+                  <div className="ficha__cell"><div className="ficha__val" style={{ fontSize: '1.6rem' }}>{latestTotal > 0 ? formatBRL(latestTotal) : 'Grátis'}</div><div className="ficha__key">Gastei</div></div>
+                </div>
+                <div style={{ marginTop: '1.25rem' }}>
+                  <Link href={`/exploracoes/${latest.slug}`} className="btn btn-accent">Ler experiência completa <ArrowRight aria-hidden /></Link>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </section>
+      ) : null}
+
+      {/* MINHAS EXPERIÊNCIAS — destaque */}
+      <section className="section container container-wide" style={{ paddingTop: 'clamp(1.5rem, 3vw, 2.5rem)' }}>
+        <div className="section-head">
+          <div>
+            <UrbanLabel>O coração do blog</UrbanLabel>
+            <h2 className="display title-lg" style={{ marginTop: '0.75rem' }}>Minhas experiências pela cidade</h2>
+            <p className="lead" style={{ marginTop: '0.6rem' }}>Cada uma é uma tarde inteira virada em matéria: fotos, relato e o que eu achei. Escolhe uma e vem comigo.</p>
+          </div>
+          <Link href="/diario" className="btn btn-ghost btn-sm">Ver o diário <ArrowRight aria-hidden /></Link>
+        </div>
+        <div className="grid grid-3 exp-grid-hl">
+          {feed.map((e, i) => (
+            <Reveal key={e.id} delay={i * 70}>
+              <ExplorationCard exp={e} place={placeBySlug.get(e.placeSlug)} />
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
       {/* FERRAMENTA — monte seu programa */}
       {planPlaces.length ? (
         <section className="section-tight container container-wide">
@@ -162,46 +206,6 @@ export default async function HomePage() {
           </div>
         </section>
       ) : null}
-
-      {/* ÚLTIMA EXPLORAÇÃO */}
-      {latest && latestPlace ? (
-        <section className="section-tight container container-wide">
-          <Reveal>
-            <div className="eyebrow"><UrbanLabel>Última parada · {formatExplorationNumber(latest.number)}</UrbanLabel></div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 1fr)', gap: 'clamp(1.5rem, 4vw, 3.5rem)', alignItems: 'center' }} className="feature-split">
-              <Photo photo={latest.photos[0] ?? latestPlace.coverImage} />
-              <div className="stack">
-                <span className="u-label" style={{ color: 'var(--text-faint)' }}>{latestHood?.name} · {siteConfig.city}</span>
-                <h2 className="display title-lg">{latest.title}</h2>
-                <p className="lead">{latest.subtitle}</p>
-                <div className="ficha" style={{ marginTop: '1rem' }}>
-                  <div className="ficha__cell"><div className="ficha__val">{Math.round(latest.durationMinutes / 60)}</div><div className="ficha__key">Tempo · {formatDuration(latest.durationMinutes)}</div></div>
-                  <div className="ficha__cell"><div className="ficha__val">{latest.rating.overall}</div><div className="ficha__key">Nota</div></div>
-                  <div className="ficha__cell"><div className="ficha__val" style={{ fontSize: '1.6rem' }}>{latestTotal > 0 ? formatBRL(latestTotal) : 'Grátis'}</div><div className="ficha__key">Gastei</div></div>
-                </div>
-                <div style={{ marginTop: '1.25rem' }}>
-                  <Link href={`/exploracoes/${latest.slug}`} className="btn btn-accent">Ler experiência completa <ArrowRight aria-hidden /></Link>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-        </section>
-      ) : null}
-
-      {/* FEED */}
-      <section className="section-tight container container-wide">
-        <div className="section-head">
-          <div><UrbanLabel>Diário · Paradas pela cidade</UrbanLabel><h2 className="heading title-lg" style={{ marginTop: '0.75rem' }}>Últimas aventuras pela cidade</h2></div>
-          <Link href="/diario" className="btn btn-ghost btn-sm">Ver diário <ArrowRight aria-hidden /></Link>
-        </div>
-        <div className="grid grid-4">
-          {feed.map((e, i) => (
-            <Reveal key={e.id} delay={i * 80}>
-              <ExplorationCard exp={e} place={placeBySlug.get(e.placeSlug)} />
-            </Reveal>
-          ))}
-        </div>
-      </section>
 
       {/* CONSTELAÇÃO — conecta as explorações */}
       {constNodes.length > 1 ? (
