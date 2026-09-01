@@ -81,8 +81,7 @@ export function Constellation({ nodes }: { nodes: ConstNode[] }) {
                 transform={`translate(${p.x}, ${p.y})`}
                 className={`constel__node ${active === k ? 'is-active' : ''} ${!connectedTo(k) ? 'is-dim' : ''}`}
                 onMouseEnter={() => setActive(k)}
-                onMouseLeave={() => setActive(null)}
-                onClick={() => setActive((cur) => (cur === k ? null : k))}
+                onClick={() => setActive(k)}
                 tabIndex={0}
                 onFocus={() => setActive(k)}
                 role="button"

@@ -725,7 +725,7 @@ select.input { appearance: none; background-image: linear-gradient(45deg, transp
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
 
 /* ===================== constelação (conecta explorações) ===================== */
-.constel { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(1rem, 3vw, 2.5rem); align-items: center; margin-top: 2rem; }
+.constel { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(1rem, 3vw, 2.5rem); align-items: start; margin-top: 2rem; }
 .constel__stage { background: radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.5rem; }
 .constel__svg { width: 100%; height: auto; display: block; overflow: visible; }
 .constel__edge { stroke: var(--border-strong); opacity: 0.5; transition: opacity 0.2s ease, stroke 0.2s ease; }
@@ -754,3 +754,21 @@ select.input { appearance: none; background-image: linear-gradient(45deg, transp
 .sp-map__journey.is-on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 path.sp-journey { animation: journey-flow 18s linear infinite; }
 @keyframes journey-flow { to { stroke-dashoffset: -300; } }
+
+/* ===================== ferramenta "monte seu programa" ===================== */
+.plantool { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); padding: 1.3rem 1.4rem; box-shadow: var(--shadow-soft); }
+.plantool__controls { display: flex; gap: 0.7rem; align-items: flex-end; flex-wrap: wrap; }
+.plantool__field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 200px; }
+.plantool__count { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-faint); margin-left: auto; }
+.chip.is-on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.plantool__results { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.7rem; margin-top: 1.2rem; }
+.plantool__card { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); padding: 0.85rem 1rem; transition: border-color 0.15s ease, transform 0.2s ease; }
+.plantool__card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+.plantool__name { font-weight: 600; color: var(--text); }
+.plantool__meta { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.3rem; font-size: 0.8rem; color: var(--text-muted); flex-wrap: wrap; }
+.plantool__tag { font-family: var(--font-mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold); }
+.plantool__stars { color: var(--gold); letter-spacing: 0.05em; }
+
+.tools-strip { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.2rem; }
+.tools-strip__item { display: inline-flex; align-items: center; gap: 0.4rem; border: 1px solid var(--border-strong); border-radius: 999px; padding: 0.5rem 0.9rem; font-size: 0.85rem; font-weight: 600; color: var(--text); background: transparent; transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease; }
+.tools-strip__item:hover { background: var(--surface); border-color: var(--text); transform: translateY(-2px); }

@@ -29,9 +29,10 @@ const SP_CENTER: [number, number] = [-23.5505, -46.6333];
 
 const COLOR = { fav: '#C2502F', ret: '#C08A2E', vis: '#3F6076' };
 
+// Tiles gratuitos, sem chave (Esri Canvas — mapas limpos que deixam os pinos brilharem)
 const TILES = {
-  light: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-  dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  light: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+  dark: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
 };
 const themeNow = () => (typeof document !== 'undefined' && document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
 
@@ -127,8 +128,8 @@ export function SPMap({ markers = [], picker = false, initial, onPick, height = 
       });
       mapRef.current = map;
 
-      tileRef.current = L.tileLayer(TILES[themeNow()], { maxZoom: 19, detectRetina: true }).addTo(map);
-      L.control.attribution({ position: 'bottomright', prefix: false }).addAttribution('© OpenStreetMap · CARTO').addTo(map);
+      tileRef.current = L.tileLayer(TILES[themeNow()], { maxZoom: 19, maxNativeZoom: 16 }).addTo(map);
+      L.control.attribution({ position: 'bottomright', prefix: false }).addAttribution('Tiles © Esri').addTo(map);
       L.control.zoom({ position: 'topright' }).addTo(map);
 
       // troca as tiles junto com o tema do site

@@ -28,6 +28,7 @@ import { CountUp } from '@/components/feature/CountUp';
 import { WeatherWidget } from '@/components/feature/WeatherWidget';
 import { Constellation, type ConstNode } from '@/components/feature/Constellation';
 import { RandomButton } from '@/components/feature/RandomButton';
+import { PlanTool, type PlanPlace } from '@/components/feature/PlanTool';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,6 +46,10 @@ export default async function HomePage() {
   const feed = feedAll.slice(0, 4);
   const journey = feedAll.slice(0, 6);
   const randomSlugs = feedAll.map((e) => e.slug);
+  const planPlaces: PlanPlace[] = markers.map((m) => ({
+    slug: m.slug, name: m.name, hood: m.neighborhoodName, free: m.free, favorite: m.favorite, categories: m.categories, rating: m.rating,
+  }));
+  const planCats = categories.map((c) => ({ slug: c.category.slug, name: c.category.name }));
   const constNodes: ConstNode[] = feedAll.map((e) => {
     const p = placeBySlug.get(e.placeSlug);
     const hood = p ? neighborhoodBySlug.get(p.neighborhood)?.name ?? p.neighborhoodName ?? p.neighborhood : '';
@@ -135,6 +140,28 @@ export default async function HomePage() {
           </div>
         </Reveal>
       </section>
+
+      {/* FERRAMENTA — monte seu programa */}
+      {planPlaces.length ? (
+        <section className="section-tight container container-wide">
+          <div className="section-head">
+            <div>
+              <UrbanLabel>Ferramenta · pra te ajudar</UrbanLabel>
+              <h2 className="heading title-lg" style={{ marginTop: '0.75rem' }}>Monte seu programa em São Paulo</h2>
+              <p className="lead" style={{ marginTop: '0.6rem' }}>Diz o que você procura — eu te mostro por onde começar, com o que já explorei.</p>
+            </div>
+          </div>
+          <PlanTool places={planPlaces} cats={planCats} />
+          <div className="tools-strip">
+            <Link href="/mapa" className="tools-strip__item">🗺️ Mapa da cidade</Link>
+            <Link href="/roteiros" className="tools-strip__item">🧭 Roteiros prontos</Link>
+            <Link href="/tags" className="tools-strip__item">🏷️ Navegar por temas</Link>
+            <Link href="/salvos" className="tools-strip__item">★ Meus salvos</Link>
+            <Link href="/rss.xml" className="tools-strip__item">📡 Assinar (RSS)</Link>
+            {randomSlugs.length ? <RandomButton slugs={randomSlugs} className="tools-strip__item">🎲 Me surpreenda</RandomButton> : null}
+          </div>
+        </section>
+      ) : null}
 
       {/* ÚLTIMA EXPLORAÇÃO */}
       {latest && latestPlace ? (
