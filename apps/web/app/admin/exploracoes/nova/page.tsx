@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function NovaExploracaoPage() {
   const places = await getAllPlaces();
-  const opts = places.map((p) => ({ slug: p.slug, name: p.name, neighborhoodName: placeNeighborhoodName(p) }));
+  const opts = places.map((p) => ({ slug: p.slug, name: p.name, neighborhoodName: placeNeighborhoodName(p), categories: p.categories }));
 
   return (
     <div className="section container container-wide" style={{ maxWidth: '1000px' }}>

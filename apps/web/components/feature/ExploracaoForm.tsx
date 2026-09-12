@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { TRANSPORT_LABEL, composeArticle, type ArticleBlock, type PhotoRef, type TransportMode } from '@turistando/core';
 import { MultiImageUpload, type UploadedPhoto } from './MultiImageUpload';
 
-interface PlaceOpt { slug: string; name: string; neighborhoodName: string }
+interface PlaceOpt { slug: string; name: string; neighborhoodName: string; categories?: string[] }
 interface Expense { label: string; category: string; amount: string }
 
 export interface ExploracaoInitial {
@@ -83,6 +83,7 @@ export function ExploracaoForm({ places, initial }: { places: PlaceOpt[]; initia
         body: JSON.stringify({
           placeName: place?.name,
           neighborhood: place?.neighborhoodName,
+          category: (place?.categories ?? []).join(', '),
           date,
           rawText,
           photos: photos.map((p) => ({ url: p.url, width: p.width, height: p.height, alt: p.alt || '', caption: p.caption })),
@@ -93,7 +94,18 @@ export function ExploracaoForm({ places, initial }: { places: PlaceOpt[]; initia
       setBlocks(data.blocks ?? []);
       if (data.title && !title) setTitle(data.title);
       if (data.subtitle && !subtitle) setSubtitle(data.subtitle);
-      setAiMsg(data.source === 'gemini' ? '✓ Organizado pelo Gemini. Revise o preview abaixo.' : (data.message ?? 'Organizado no modo local.'));
+      // legendas automáticas: preenche só as vazias (mantém o que você já escreveu)
+      const caps: string[] = Array.isArray(data.captions) ? data.captions : [];
+      let filled = 0;
+      if (caps.length) {
+        setPhotos((prev) => prev.map((p, i) => {
+          if ((p.caption ?? '').trim() || !caps[i]) return p;
+          filled += 1;
+          return { ...p, caption: caps[i] };
+        }));
+      }
+      const base = data.source === 'gemini' ? '✓ Organizado pelo Gemini.' : (data.message ?? 'Organizado no modo local.');
+      setAiMsg(filled ? `${base} ${filled} legenda(s) preenchida(s) — revise o preview.` : `${base} Revise o preview abaixo.`);
     } catch (e) {
       setAiMsg('Falha ao organizar: ' + (e as Error).message);
     } finally {
@@ -159,8 +171,11 @@ export function ExploracaoForm({ places, initial }: { places: PlaceOpt[]; initia
       </Section>
 
       {/* 2. Fotos */}
-      <Section n="2" title="Fotos (até 20)">
-        <MultiImageUpload value={photos} onChange={setPhotos} max={20} />
+      <Section n="2" title="Fotos (até 30)">
+        <MultiImageUpload value={photos} onChange={setPhotos} max={30} />
+        <p className="coord" style={{ marginTop: '0.6rem', color: 'var(--text-faint)' }}>
+          Dica: suba as fotos e clique em <strong>“Organizar com Gemini”</strong> abaixo — a IA preenche as legendas automaticamente, com base no tipo do lugar. Você pode ajustar cada uma depois.
+        </p>
       </Section>
 
       {/* 3. Relato */}

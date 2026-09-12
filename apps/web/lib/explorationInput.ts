@@ -40,7 +40,7 @@ export const ExplorationInput = z.object({
       wouldReturn: z.enum(['com-certeza', 'talvez', 'nao-prioridade']).default('com-certeza'),
     })
     .default({ overall: 0, wouldReturn: 'com-certeza' }),
-  photos: z.array(PhotoInput).max(20, 'Máximo de 20 fotos.').optional().default([]),
+  photos: z.array(PhotoInput).max(30, 'Máximo de 30 fotos.').optional().default([]),
   article: z.array(z.any()).optional().default([]),
   rawText: z.string().optional().default(''),
   tags: z.array(z.string()).optional().default([]),

@@ -11,7 +11,7 @@ export default async function EditarExploracaoPage({ params }: { params: { slug:
   const exp = await getExploration(params.slug);
   if (!exp) notFound();
   const places = await getAllPlaces();
-  const opts = places.map((p) => ({ slug: p.slug, name: p.name, neighborhoodName: placeNeighborhoodName(p) }));
+  const opts = places.map((p) => ({ slug: p.slug, name: p.name, neighborhoodName: placeNeighborhoodName(p), categories: p.categories }));
 
   const initial: ExploracaoInitial = {
     slug: exp.slug,

@@ -33,7 +33,7 @@ async function downscale(file: File, maxDim = 1600, quality = 0.82): Promise<{ b
 export function MultiImageUpload({
   value,
   onChange,
-  max = 20,
+  max = 30,
 }: {
   value: UploadedPhoto[];
   onChange: (photos: UploadedPhoto[]) => void;
